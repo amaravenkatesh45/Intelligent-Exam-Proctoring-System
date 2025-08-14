@@ -15,15 +15,56 @@ def main():
     print("Press 'q' to quit")
     print("=" * 50)
     
-    # Initialize webcam
-    try:
-        video_capture = cv2.VideoCapture(0)
-        if not video_capture.isOpened():
-            print("Error: Could not open webcam")
-            return
-    except Exception as e:
-        print(f"Error initializing webcam: {e}")
+    # Initialize webcam with multiple fallback options
+    video_capture = None
+    camera_indices = [0, 1, 2, -1]  # Try different camera indices
+
+    for idx in camera_indices:
+        try:
+            print(f"Trying camera index {idx}...")
+            if idx == -1:
+                # Try DirectShow backend on Windows
+                video_capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+            else:
+                video_capture = cv2.VideoCapture(idx)
+
+            if video_capture.isOpened():
+                # Test if we can actually read a frame
+                ret, test_frame = video_capture.read()
+                if ret and test_frame is not None:
+                    print(f"Successfully connected to camera {idx}")
+                    break
+                else:
+                    video_capture.release()
+                    video_capture = None
+            else:
+                if video_capture:
+                    video_capture.release()
+                video_capture = None
+        except Exception as e:
+            print(f"Failed to connect to camera {idx}: {e}")
+            if video_capture:
+                video_capture.release()
+            video_capture = None
+
+    if video_capture is None:
+        print("Error: Could not access any webcam")
+        print("Troubleshooting tips:")
+        print("1. Check if camera is being used by another application")
+        print("2. Check camera permissions in Windows Settings")
+        print("3. Try running as administrator")
+        print("4. Make sure camera drivers are installed")
         return
+
+    # Configure camera settings for better performance
+    try:
+        video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        video_capture.set(cv2.CAP_PROP_FPS, 30)
+        video_capture.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        print("Camera configured: 640x480 @ 30fps")
+    except Exception as e:
+        print(f"Warning: Could not configure camera settings: {e}")
     
     # Check if required model files exist
     models_dir = "models"
