@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Online Exam Proctoring System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .demo-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e68900;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+        }
+
+        .demo-display {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .video-area {
+            flex: 2;
+            background: #000;
+            border-radius: 10px;
+            position: relative;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .monitoring-panel {
+            flex: 1;
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-normal {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .status-alert {
+            color: #f44336;
+            font-weight: bold;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.5; }
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .github-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .github-btn {
+            display: inline-block;
+            background: #333;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .github-btn:hover {
+            background: #555;
+            transform: translateY(-2px);
+        }
+
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .demo-text {
+            color: white;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .alert-box {
+            background: #ff5722;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+
+        .alert-box.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Intelligent Online Exam Proctoring System</h1>
+            <p>Advanced AI-powered monitoring for secure online examinations</p>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎥 Live Demo</h2>
+            <div class="demo-controls">
+                <button class="btn btn-primary" onclick="startDemo()">Start Proctoring</button>
+                <button class="btn btn-warning" onclick="simulateScenario('no_face')">Simulate: No Face</button>
+                <button class="btn btn-warning" onclick="simulateScenario('multiple_faces')">Simulate: Multiple Faces</button>
+                <button class="btn btn-danger" onclick="simulateScenario('suspicious')">Simulate: Suspicious Activity</button>
+                <button class="btn btn-primary" onclick="simulateScenario('normal')">Reset to Normal</button>
+            </div>
+
+            <div class="alert-box" id="alertBox">
+                🚨 ALERT: Suspicious activity detected!
+            </div>
+
+            <div class="demo-display">
+                <div class="video-area" id="videoArea">
+                    <div class="demo-text" id="demoText">
+                        Click "Start Proctoring" to begin the demo
+                    </div>
+                </div>
+
+                <div class="monitoring-panel">
+                    <h3>📊 Monitoring Panel</h3>
+                    <div class="status-item">
+                        <span>Face Detection:</span>
+                        <span class="status-normal" id="faceStatus">Ready</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Eye Tracking:</span>
+                        <span class="status-normal" id="eyeStatus">Ready</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Head Pose:</span>
+                        <span class="status-normal" id="headStatus">Ready</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Object Detection:</span>
+                        <span class="status-normal" id="objectStatus">Ready</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Audio Monitoring:</span>
+                        <span class="status-normal" id="audioStatus">Ready</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Session Time:</span>
+                        <span class="status-normal" id="timeStatus">00:00:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>🔍 Face Detection & Recognition</h3>
+                <p>Advanced AI algorithms detect and verify student identity using facial recognition technology.</p>
+            </div>
+            <div class="feature-card">
+                <h3>👁️ Eye Tracking</h3>
+                <p>Real-time gaze detection to monitor if students are looking away from the screen during exams.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📱 Object Detection</h3>
+                <p>Identifies prohibited items like phones, books, or other devices in the exam environment.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎯 Head Pose Estimation</h3>
+                <p>Monitors head movement and orientation to detect suspicious behavior patterns.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔊 Audio Analysis</h3>
+                <p>Detects unusual sounds or conversations during the examination period.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🛡️ Anti-Spoofing</h3>
+                <p>Advanced algorithms prevent cheating attempts using photos or videos instead of live presence.</p>
+            </div>
+        </div>
+
+        <div class="github-section">
+            <h2>🚀 View Source Code</h2>
+            <p>Explore the complete implementation on GitHub</p>
+            <a href="https://github.com/amaravenkatesh45/Intelligent-Exam-Proctoring-System" class="github-btn" target="_blank">
+                📂 View on GitHub
+            </a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
