@@ -1,0 +1,33 @@
+# GitHub Pages Configuration
+title: "Intelligent Online Exam Proctoring System"
+description: "Advanced AI-powered online exam proctoring system with real-time monitoring"
+author: "Amar Avenkatesh"
+email: "amaravenkateshkongara@gmail.com"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# GitHub Pages settings
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Exclude files from processing
+exclude:
+  - Code/
+  - Documentation/
+  - Miscellaneous/
+  - New_Functionalities/
+  - Video/
+  - .github/
+  - README.md
+  - SETUP_GUIDE.md
+  - WEBCAM_TROUBLESHOOTING.md
+  - .gitignore
+
+# Include files
+include:
+  - index.html
+  - script.js
